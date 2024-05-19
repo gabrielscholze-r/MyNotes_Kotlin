@@ -1,6 +1,7 @@
 package com.example.mynotes.controller
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -18,13 +19,18 @@ class EditCreateNote : AppCompatActivity() {
         binding = ActivityEditarNotaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        position = intent.getIntExtra("position", -1)
-        if (position != -1) {
-            setData(position)
+        intent.getIntExtra("position", -1).apply {
+            position = this
+            if (position != -1)
+                setData(position)
         }
 
         binding.btnSave.setOnClickListener {
-            saveNota()
+            getData()?.let { nota ->
+                saveNota(nota)
+            } ?: run {
+                showMessage("Campos inválidos!!!")
+            }
         }
 
         binding.btnCancel.setOnClickListener {
@@ -33,21 +39,29 @@ class EditCreateNote : AppCompatActivity() {
         }
     }
 
-    private fun saveNota() {
+    private fun getData(): Nota? {
         val titulo = binding.txtTitulo.text.toString()
         val conteudo = binding.txtConteudo.text.toString()
 
-        if (titulo.length > 50 || conteudo.length > 200) {
-            showMessage("Limite de caracteres excedido! Título: 50, Conteúdo: 200")
-            return
+        if (titulo.isEmpty() || conteudo.isEmpty())
+            return null
+
+        return Nota(titulo, conteudo)
+    }
+
+    private fun saveNota(nota: Nota) {
+        if (position == -1) {
+            // Adding a new note
+            DataStore.addNota(nota)
+        } else {
+            // Editing an existing note
+            DataStore.editNota(position, nota)
         }
 
-        if (position == -1) {
-            DataStore.addNota(Nota(titulo, conteudo))
-        } else {
-            DataStore.editNota(position, Nota(titulo, conteudo))
+        val resultIntent = Intent().apply {
+            putExtra("position", position)
         }
-        setResult(Activity.RESULT_OK)
+        setResult(Activity.RESULT_OK, resultIntent)
         finish()
     }
 

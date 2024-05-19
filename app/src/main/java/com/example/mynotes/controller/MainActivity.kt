@@ -24,26 +24,31 @@ class MainActivity : AppCompatActivity() {
 
     private val addNoteForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
-            result.data?.let {
+            result.data?.let { intent ->
+                adapter.notifyItemInserted(DataStore.notas.size - 1)
                 Snackbar.make(
                     binding.root,
                     "Nota adicionada com sucesso!!!",
                     Snackbar.LENGTH_LONG
                 ).show()
-                adapter.notifyDataSetChanged()
             }
         }
     }
 
     private val editNoteForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
-            result.data?.let {
+            result.data?.let { intent ->
+                val position = intent.getIntExtra("position", -1)
+                if (position != -1) {
+                    adapter.notifyItemChanged(position)
+                } else {
+                    adapter.notifyItemInserted(DataStore.notas.size - 1)
+                }
                 Snackbar.make(
                     binding.root,
                     "Nota alterada com sucesso!!!",
                     Snackbar.LENGTH_LONG
                 ).show()
-                adapter.notifyDataSetChanged()
             }
         }
     }
@@ -82,11 +87,14 @@ class MainActivity : AppCompatActivity() {
     private fun configureGesture() {
         gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                binding.recyclerView.findChildViewUnder(e.x, e.y)?.let { child ->
-                    val position = binding.recyclerView.getChildAdapterPosition(child)
-                    Intent(this@MainActivity, EditCreateNote::class.java).apply {
-                        putExtra("position", position)
-                        editNoteForResult.launch(this)
+                binding.recyclerView.findChildViewUnder(e.x, e.y).run {
+                    this?.let { child ->
+                        binding.recyclerView.getChildAdapterPosition(child).apply {
+                            Intent(this@MainActivity, EditCreateNote::class.java).run {
+                                putExtra("position", this@apply)
+                                editNoteForResult.launch(this)
+                            }
+                        }
                     }
                 }
                 return super.onSingleTapConfirmed(e)

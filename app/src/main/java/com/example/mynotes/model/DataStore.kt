@@ -1,7 +1,7 @@
 package com.example.mynotes.model
 
 object DataStore {
-    val notas = mutableListOf<Nota>()
+    var notas = mutableListOf<Nota>()
 
     fun addNota(nota: Nota) {
         notas.add(nota)
