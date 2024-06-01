@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mynotes.databinding.AdapterNotesBinding
 import com.example.mynotes.model.Nota
 
+
 class NoteAdapter(
     private val notes: MutableList<Nota>,
-    private val onNoteClick: (Int) -> Unit
+    private val onNoteClick: (Int) -> Unit,
+    private val onNoteLongClick: (Int) -> Unit
 ) : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
 
     inner class NoteHolder(private val binding: AdapterNotesBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -21,6 +23,10 @@ class NoteAdapter(
                 nota.conteudo
             }
             binding.root.setOnClickListener { onNoteClick(position) }
+            binding.root.setOnLongClickListener {
+                onNoteLongClick(position)
+                true
+            }
         }
     }
 
