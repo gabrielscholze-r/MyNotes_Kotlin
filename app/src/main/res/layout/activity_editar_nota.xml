@@ -11,7 +11,11 @@
         android:layout_height="wrap_content"
         android:hint="Título"
         android:maxLength="50" />
-
+    <Spinner
+        android:hint="Categoria"
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <EditText
         android:id="@+id/txtConteudo"
         android:layout_width="match_parent"

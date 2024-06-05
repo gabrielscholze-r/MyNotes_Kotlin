@@ -1,11 +1,11 @@
 package com.example.mynotes.controller
 
+import CategoriasFragment
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.mynotes.R
 import com.example.mynotes.databinding.ActivityMainBinding
-import com.example.mynotes.view.CategoriasFragment
 import com.example.mynotes.view.NoteFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

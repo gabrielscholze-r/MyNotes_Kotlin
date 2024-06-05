@@ -13,6 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mynotes.controller.EditCreateNote
 import com.example.mynotes.databinding.FragmentNotesBinding
 import com.example.mynotes.model.DataStore
+import com.example.mynotes.model.Nota
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.File
 
 class NoteFragment : Fragment() {
 
@@ -29,14 +33,16 @@ class NoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val notas = loadNotasFromInternalStorage()
+        DataStore.notas.clear()
+        DataStore.notas.addAll(notas)
         setupRecyclerView()
         setupAddButton()
     }
 
     private fun setupRecyclerView() {
         val notes = DataStore.notas
-
+        val categorias = DataStore.categorias
         adapter = NoteAdapter(notes,
             { position -> editNote(position) },
             { position -> showDeleteDialog(position) }
@@ -90,6 +96,17 @@ class NoteFragment : Fragment() {
             }
         }
     }
+    private fun loadNotasFromInternalStorage(): List<Nota> {
+        val file = File(requireContext().filesDir, "notas.json")
+        if (!file.exists()) {
+            return emptyList()
+        }
+
+        val reader = file.reader()
+        val notasType = object : TypeToken<List<Nota>>() {}.type
+        return Gson().fromJson(reader, notasType)
+    }
+
 
     companion object {
         private const val ADD_NOTE_REQUEST_CODE = 1

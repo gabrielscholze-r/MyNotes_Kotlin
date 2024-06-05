@@ -30,11 +30,15 @@ object DataStore {
     fun removeNota(position: Int) {
         notas.removeAt(position)
     }
-
+    fun getAllCategorias(): List<Categoria>{
+        return categorias
+    }
     fun getCategoria(position: Int): Categoria {
         return categorias[position]
     }fun addCategoria(c: Categoria) {
-        categorias.add(c)
+        if(!categorias.contains(c)) {
+            categorias.add(c)
+        }
     }
 
     fun editCategoria(position: Int, categoria: Categoria) {

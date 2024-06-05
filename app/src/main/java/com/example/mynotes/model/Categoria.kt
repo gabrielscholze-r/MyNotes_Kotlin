@@ -1,5 +1,5 @@
 package com.example.mynotes.model
 
-class Categoria (
+data class Categoria (
     var nome: String
 )
