@@ -3,19 +3,6 @@ package com.example.mynotes.model
 object DataStore {
     var notas = mutableListOf<Nota>()
     var categorias = mutableListOf<Categoria>()
-
-    init {
-        categorias.add(Categoria("Trabalho"))
-        categorias.add(Categoria("Estudos"))
-        categorias.add(Categoria("Pessoal"))
-        categorias.add(Categoria("Finanças"))
-        categorias.add(Categoria("Saúde"))
-        categorias.add(Categoria("Lazer"))
-        categorias.add(Categoria("Projetos"))
-        categorias.add(Categoria("Família"))
-        categorias.add(Categoria("Viagens"))
-        categorias.add(Categoria("Compras"))
-    }
     fun addNota(nota: Nota) {
         notas.add(nota)
     }

@@ -31,9 +31,7 @@ class EditCreateNote : AppCompatActivity() {
         binding = ActivityEditarNotaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        copyJsonToInternalStorage()
-
-        categorias = loadCategoriasFromInternalStorage()
+        categorias = DataStore.getAllCategorias()
 
         val categoriaNomes = categorias.map { it.nome }.toMutableList()
         DataStore.categorias = categorias.map { Categoria(it.nome) }.toMutableList()
@@ -88,7 +86,6 @@ class EditCreateNote : AppCompatActivity() {
         if (position == -1) {
             DataStore.addNota(nota)
         } else {
-            // Editar uma nota existente
             DataStore.editNota(position, nota)
         }
 
@@ -139,6 +136,7 @@ class EditCreateNote : AppCompatActivity() {
 
 
                 saveCategoriasToInternalStorage(categorias)
+                categorias = DataStore.getAllCategorias()
             } else {
                 showMessage("Nome da categoria não pode estar vazio.")
             }
