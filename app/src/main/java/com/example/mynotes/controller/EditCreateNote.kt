@@ -147,26 +147,6 @@ class EditCreateNote : AppCompatActivity() {
 
         builder.show()
     }
-
-    private fun copyJsonToInternalStorage() {
-        val fileName = "categorias.json"
-        val file = File(filesDir, fileName)
-        if (!file.exists()) {
-            assets.open(fileName).use { inputStream ->
-                file.outputStream().use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-            }
-        }
-    }
-
-    private fun loadCategoriasFromInternalStorage(): List<Categoria> {
-        val file = File(filesDir, "categorias.json")
-        val reader = file.reader()
-        val categoriasType = object : TypeToken<List<Categoria>>() {}.type
-        return Gson().fromJson(reader, categoriasType)
-    }
-
     private fun saveCategoriasToInternalStorage(categorias: List<Categoria>) {
         val file = File(filesDir, "categorias.json")
         val writer = file.writer()
