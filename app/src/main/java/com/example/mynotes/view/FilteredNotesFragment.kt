@@ -11,8 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mynotes.controller.EditCreateNote
 import com.example.mynotes.databinding.FragmentFilteredlistBinding
 import com.example.mynotes.model.DataStore
+import com.example.mynotes.model.Nota
 import com.example.mynotes.view.NoteAdapter
 import com.example.mynotes.view.NoteFragment
+import com.google.gson.Gson
+import java.io.File
 
 class FilteredNotesFragment : Fragment() {
     private lateinit var binding: FragmentFilteredlistBinding
@@ -62,18 +65,20 @@ class FilteredNotesFragment : Fragment() {
         startActivityForResult(intent, 2)
     }
 
-    private fun deleteNote(position: Int) {
-        val note = DataStore.notas[position]
-
+    private fun deleteNote(id: Int) {
+        val note = DataStore.getNoteByID(id)
+        val index = DataStore.notas.indexOf(note)
         AlertDialog.Builder(requireContext()).run {
             setMessage("Tem certeza que deseja excluir esta nota?")
             setPositiveButton("Excluir") { _, _ ->
-                DataStore.removeNota(position)
-                adapter.notifyItemRemoved(position)
+
+                DataStore.removeNota(id)
+                saveNotas(DataStore.notas)
+                adapter.removeNoteAt(index)
                 Toast.makeText(requireContext(), "Nota '${note.titulo}' excluída com sucesso!!!", Toast.LENGTH_LONG).show()
             }
             setNegativeButton("Cancelar") { dialog, _ ->
-                adapter.notifyItemChanged(position)
+                adapter.notifyItemChanged(index)
                 dialog.dismiss()
             }
             show()
@@ -89,5 +94,11 @@ class FilteredNotesFragment : Fragment() {
                 }
             }
         }
+    }
+    private fun saveNotas(notas: List<Nota>) {
+        val file = File(requireContext().filesDir, "notas.json")
+        val writer = file.writer()
+        Gson().toJson(notas, writer)
+        writer.close()
     }
 }

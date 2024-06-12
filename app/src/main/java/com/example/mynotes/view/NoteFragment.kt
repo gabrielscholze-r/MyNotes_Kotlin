@@ -42,7 +42,6 @@ class NoteFragment : Fragment() {
 
     private fun setupRecyclerView() {
         val notes = DataStore.notas
-        val categorias = DataStore.categorias
         adapter = NoteAdapter(notes,
             { position -> editNote(position) },
             { position -> showDeleteDialog(position) }
@@ -51,18 +50,19 @@ class NoteFragment : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
     }
-    private fun showDeleteDialog(position: Int) {
-        val note = DataStore.notas[position]
-
+    private fun showDeleteDialog(id: Int) {
+        val note = DataStore.getNoteByID(id)
+        val index = DataStore.notas.indexOf(note)
         AlertDialog.Builder(requireContext()).run {
             setMessage("Tem certeza que deseja excluir esta nota?")
             setPositiveButton("Excluir") { _, _ ->
-                DataStore.removeNota(position)
-                adapter.notifyItemRemoved(position)
+                DataStore.removeNota(id)
+                saveNotas(DataStore.notas)
+                adapter.notifyItemRemoved(index)
                 Toast.makeText(requireContext(), "Nota '${note.titulo}' excluída com sucesso!!!", Toast.LENGTH_LONG).show()
             }
             setNegativeButton("Cancelar") { dialog, _ ->
-                adapter.notifyItemChanged(position)
+                adapter.notifyItemChanged(id)
                 dialog.dismiss()
             }
             show()
@@ -107,9 +107,15 @@ class NoteFragment : Fragment() {
         return Gson().fromJson(reader, notasType)
     }
 
-
+    private fun saveNotas(notas: List<Nota>) {
+        val file = File(requireContext().filesDir, "notas.json")
+        val writer = file.writer()
+        Gson().toJson(notas, writer)
+        writer.close()
+    }
     companion object {
         private const val ADD_NOTE_REQUEST_CODE = 1
         private const val EDIT_NOTE_REQUEST_CODE = 2
     }
+
 }

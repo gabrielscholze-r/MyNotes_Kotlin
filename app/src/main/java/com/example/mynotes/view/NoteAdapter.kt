@@ -16,7 +16,10 @@ class NoteAdapter(
     private val onNoteLongClick: (Int) -> Unit
 
 ) : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
-
+    fun removeNoteAt(position: Int) {
+        notes.removeAt(position)
+        notifyItemRemoved(position)
+    }
     inner class NoteHolder(private val binding: AdapterNotesBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(nota: Nota, position: Int) {
 
@@ -28,7 +31,7 @@ class NoteAdapter(
             }
             binding.root.setOnClickListener { onNoteClick(position) }
             binding.root.setOnLongClickListener {
-                onNoteLongClick(position)
+                onNoteLongClick(nota.id)
                 true
             }
 

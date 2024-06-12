@@ -1,5 +1,10 @@
 package com.example.mynotes.model
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.google.gson.Gson
+import java.io.File
+
 object DataStore {
     var notas = mutableListOf<Nota>()
     var categorias = mutableListOf<Categoria>()
@@ -14,8 +19,8 @@ object DataStore {
         return notas[position]
     }
 
-    fun removeNota(position: Int) {
-        notas.removeAt(position)
+    fun removeNota(id: Int) {
+        notas.removeAll{ it.id == id }
     }
     fun getAllCategorias(): List<Categoria>{
         return categorias
@@ -34,6 +39,9 @@ object DataStore {
 
     fun removeCategoria(position: Int) {
         categorias.removeAt(position)
+    }
+    fun getNoteByID(id: Int): Nota{
+        return notas.filter {it.id==id}.get(0)
     }
 
 }

@@ -76,13 +76,16 @@ class EditCreateNote : AppCompatActivity() {
         val titulo = binding.txtTitulo.text.toString()
         val conteudo = binding.txtConteudo.text.toString()
         val categoria = binding.spinner.selectedItem.toString()
+        var id = 0
+        if (DataStore.notas.size>0)
+            id = DataStore.notas.get(DataStore.notas.size-1).id+1
         if (titulo.isEmpty() || conteudo.isEmpty())
             return null
 
-        return Nota(titulo, conteudo, Categoria(categoria))
+        return Nota(id,titulo, conteudo, Categoria(categoria))
     }
 
-    private fun saveNota(nota: Nota) {
+    fun saveNota(nota: Nota) {
         if (position == -1) {
             DataStore.addNota(nota)
         } else {
